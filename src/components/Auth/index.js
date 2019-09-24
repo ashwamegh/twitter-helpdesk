@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 import styled from "styled-components";
@@ -34,14 +34,37 @@ const AuthOptionsWrapper = styled.div`
   justify-content: center;
 `;
 
-const Auth = () => (
-  <AuthContainer>
-    <h1>Twitter HelpDesk</h1>
-    <p>Please sign-in:</p>
-    <AuthOptionsWrapper>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-    </AuthOptionsWrapper>
-  </AuthContainer>
-);
+class Auth extends Component {
+  // Listen to the Firebase Auth state and set the local state.
+  componentDidMount() {
+    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+        (user) => {
+          if (user) {
+            localStorage.setItem('twitterHelpdesk.expectSignIn', '1')
+          } else {
+            localStorage.removeItem('twitterHelpdesk.expectSignIn')
+          }
+        }
+    );
+  }
+
+  // Un-register Firebase observers when the component unmounts.
+  componentWillUnmount() {
+    this.unregisterAuthObserver();
+  }
+
+  render() {
+    return(<AuthContainer>
+      <h1>Twitter HelpDesk</h1>
+      <p>Please sign-in:</p>
+      <AuthOptionsWrapper>
+        <StyledFirebaseAuth
+          uiConfig={uiConfig}
+          firebaseAuth={firebase.auth()}
+        />
+      </AuthOptionsWrapper>
+    </AuthContainer>);
+  }
+}
 
 export default Auth;
