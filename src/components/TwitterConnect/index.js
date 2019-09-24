@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import firebase from 'firebase';
 import twitterLogo from "./../../assets/images/twitter-icon.png";
 
 import { AppBar } from "./../";
@@ -18,9 +19,10 @@ const TwitterConnectButton = styled.div`
   justify-content: center;
   border-radius: 50px;
   color: #000000e0;
-  max-width: 290px;
-  min-height: 70px;
+  max-width: 260px;
+  min-height: 56px;
   cursor: pointer;
+  margin: 0 auto;
 `;
 
 const Heading = styled.h3`
@@ -31,12 +33,25 @@ const Image = styled.img`
   width: 15%;
 `
 
+const handleTwitterSignIn = () => {
+  const provider = new firebase.auth.TwitterAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+    const token = result.credential.accessToken;
+    const secret = result.credential.secret;
+    localStorage.setItem('twitterHelpdesk.accessToken', token);
+    localStorage.setItem('twitterHelpdesk.accessSecret', secret)
+  }).catch(function(error) {
+    alert("Error connecting Twitter");
+  });
+}
+
 const TwitterConnect = () => (
   <div>
     <AppBar />
     <TwitterConnectWrap>
       <Heading>Connect your Twitter account</Heading>
-      <TwitterConnectButton>
+      <TwitterConnectButton onClick={() => handleTwitterSignIn()}>
         <Image src={twitterLogo} alt="Twitter Logo" />
       </TwitterConnectButton>
     </TwitterConnectWrap>
