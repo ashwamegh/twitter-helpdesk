@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Component } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Pusher from "pusher-js";
 import moment from "moment";
@@ -41,9 +41,6 @@ const ChatContainer = styled.div`
   width: 100%;
 `;
 
-const Image = styled.img`
-  max-width: 400px;
-`;
 const ScrollableGrid = styled(Grid)`
   height: calc(100vh - 64px);
   overflow-y: scroll;
@@ -66,8 +63,6 @@ class HelpDesk extends Component {
 
   componentDidMount() {
     const self = this;
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
     const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
       cluster: "ap2",
       forceTLS: true
