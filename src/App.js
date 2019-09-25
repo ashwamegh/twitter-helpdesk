@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "firebase";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Auth, TwitterConnect } from "./components";
+import { Auth, TwitterConnect, HelpDesk } from "./components";
 
 const PrivateRoute = props => {
   return firebase.auth().currentUser != null ||
@@ -22,6 +22,7 @@ const Routes = () => {
     <Router>
       <Route exact path="/" component={Auth} />
       <PrivateRoute path="/signedIn" component={TwitterConnect} />
+      <PrivateRoute path="/helpdesk" component={HelpDesk} />
     </Router>
   );
 };
