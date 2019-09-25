@@ -42,6 +42,7 @@ const handleTwitterSignIn = (history) => {
     const secret = result.credential.secret;
     localStorage.setItem('twitterHelpdesk.accessToken', token);
     localStorage.setItem('twitterHelpdesk.accessSecret', secret);
+    localStorage.setItem('username', result.additionalUserInfo.username)
     history.push('/helpdesk');
   }).catch(function(error) {
     alert("Error connecting Twitter");
