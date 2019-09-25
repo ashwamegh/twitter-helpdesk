@@ -56,7 +56,7 @@ class Auth extends Component {
   render() {
     return(<AuthContainer>
       <h1>Twitter HelpDesk</h1>
-      <p>Please sign-in:</p>
+      <p>Please sign-in to continue:</p>
       <AuthOptionsWrapper>
         <StyledFirebaseAuth
           uiConfig={uiConfig}
