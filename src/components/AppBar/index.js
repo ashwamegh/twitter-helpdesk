@@ -22,6 +22,9 @@ const useStyles = makeStyles(theme => ({
 const handleLogout = (history) => {
   firebase.auth().signOut();
   localStorage.removeItem('twitterHelpdesk.expectSignIn');
+  localStorage.removeItem('twitterHelpdesk.accessToken');
+  localStorage.removeItem('twitterHelpdesk.accessSecret');
+  localStorage.removeItem('username');
   history.push('/');
 }
 
