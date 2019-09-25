@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import { makeStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -18,12 +19,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const handleLogout = () => {
+const handleLogout = (history) => {
   firebase.auth().signOut();
   localStorage.removeItem('twitterHelpdesk.expectSignIn');
+  history.push('/');
 }
 
-const SimpleAppBar = () => {
+const SimpleAppBar = ({ history }) => {
   const classes = useStyles();
 
   return (
@@ -33,11 +35,11 @@ const SimpleAppBar = () => {
           <Typography variant="h6" className={classes.title}>
             Twitter HelpDesk
           </Typography>
-          <Button color="inherit" onClick={() => handleLogout()}>Logout</Button>
+          <Button color="inherit" onClick={() => handleLogout(history)}>Logout</Button>
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
-export default SimpleAppBar;
+export default withRouter(SimpleAppBar);
