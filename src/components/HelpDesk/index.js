@@ -190,7 +190,7 @@ const Chatlist = (tweets, fetchTweetThread, threadID) => {
           return (
             <ChatListItem
               active={threadID === tweet.id_str}
-              key={tweet.id}
+              key={Number(tweet.id_str)}
               onClick={() => fetchTweetThread(tweet.id_str)}
             >
               <Avatar
@@ -214,16 +214,19 @@ const Chatlist = (tweets, fetchTweetThread, threadID) => {
 };
 
 const Messagelist = tweetThread => {
+  const username = localStorage.getItem('username');
+
   return (
     <MessageList active>
-      {tweetThread.map(thread => (
+      {tweetThread.map((thread, index) => (
         <MessageGroup
           avatar={thread.user.profile_image_url_https}
           onlyFirstWithMeta
-          key={thread.id}
+          key={index}
+          isOwn={username === thread.user.screen_name}
         >
           <Message
-            authorName={thread.user.name}
+            authorName={username === thread.user.screen_name ?  "You": thread.user.name}
             date={`${moment(new Date(thread.created_at)).format(
               "ll"
             )} at ${moment(new Date(thread.created_at)).format("LT")}`}
