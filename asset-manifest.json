@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/twitter-helpdesk/static/css/main.14b92a9d.chunk.css",
+    "main.js": "/twitter-helpdesk/static/js/main.77858123.chunk.js",
+    "main.js.map": "/twitter-helpdesk/static/js/main.77858123.chunk.js.map",
+    "runtime-main.js": "/twitter-helpdesk/static/js/runtime-main.d69e2295.js",
+    "runtime-main.js.map": "/twitter-helpdesk/static/js/runtime-main.d69e2295.js.map",
+    "static/js/2.a332955a.chunk.js": "/twitter-helpdesk/static/js/2.a332955a.chunk.js",
+    "static/js/2.a332955a.chunk.js.map": "/twitter-helpdesk/static/js/2.a332955a.chunk.js.map",
+    "index.html": "/twitter-helpdesk/index.html",
+    "precache-manifest.7e32a9f9121c78c56cae3ce365764255.js": "/twitter-helpdesk/precache-manifest.7e32a9f9121c78c56cae3ce365764255.js",
+    "service-worker.js": "/twitter-helpdesk/service-worker.js",
+    "static/css/main.14b92a9d.chunk.css.map": "/twitter-helpdesk/static/css/main.14b92a9d.chunk.css.map",
+    "static/media/twitter-icon.png": "/twitter-helpdesk/static/media/twitter-icon.902f2b3a.png"
+  }
+}
