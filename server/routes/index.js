@@ -35,7 +35,7 @@ router.post('/twitter/tweets', (req, res) => {
     exclude_replies: false,
     count: 50
   }
-    client.get('statuses/user_timeline',params, (error, tweets, response) => {
+    client.get('statuses/mentions_timeline',params, (error, tweets, response) => {
       if(error) console.log(error);
       res.json(tweets);
     })
