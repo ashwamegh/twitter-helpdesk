@@ -147,12 +147,14 @@ class HelpDesk extends Component {
         ) : (
           <ChatContainer>
             <Grid container spacing={0}>
-              <ScrollableGrid item xs={4}>
+              <ScrollableGrid item xs={4} lg={3} md={3}>
                 {Chatlist(tweets, this.fetchTweetThread, threadID)}
               </ScrollableGrid>
               <ScrollableGrid
                 item
                 xs={8}
+                lg={9}
+                md={9}
                 style={{ borderLeft: "1px solid #8080803d" }}
               >
                 {Messagelist(tweetThread)}
