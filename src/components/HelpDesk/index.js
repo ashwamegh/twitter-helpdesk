@@ -118,7 +118,8 @@ class HelpDesk extends Component {
         key: localStorage.getItem("twitterHelpdesk.accessToken"),
         secret: localStorage.getItem("twitterHelpdesk.accessSecret"),
         status: `@${tweetThread[0].user.screen_name} ${message}`,
-        statusID: tweetThread[0].id_str
+        statusID: tweetThread[0].id_str,
+        keywords: `@${tweetThread[0].user.screen_name},${localStorage.getItem("username")}`
       })
     })
       .then(json)
