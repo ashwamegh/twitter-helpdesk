@@ -31,30 +31,30 @@ router.get("/", function(req, res, next) {
 router.post("/twitter/tweets", async (req, res) => {
   const { key, secret } = req.body;
   const client = createTwitterClient(key, secret);
-  const channelsClient = createPusherChannelClient();
+  // const channelsClient = createPusherChannelClient();
   const params = {
     exclude_replies: false,
     count: 100
   };
 
-  const webhook = new Autohook();
+  // const webhook = new Autohook();
 
-  // Removes existing webhooks
-  await webhook.removeWebhooks();
+  // // Removes existing webhooks
+  // await webhook.removeWebhooks();
 
-  // Listens to incoming activity
-  webhook.on("event", event => {
-    if (Object.prototype.hasOwnProperty.call(event, "tweet_create_events")) {
-      console.log("Something happened:", event);
-      channelsClient.trigger("chat", "message", event.tweet_create_events);
-    }
-  });
+  // // Listens to incoming activity
+  // webhook.on("event", event => {
+  //   if (Object.prototype.hasOwnProperty.call(event, "tweet_create_events")) {
+  //     console.log("Something happened:", event);
+  //     channelsClient.trigger("chat", "message", event.tweet_create_events);
+  //   }
+  // });
 
-  // Starts a server and adds a new webhook
-  await webhook.start();
+  // // Starts a server and adds a new webhook
+  // await webhook.start();
 
-  // Subscribes to a user's activity
-  await webhook.subscribe({ oauth_token: key, oauth_token_secret: secret });
+  // // Subscribes to a user's activity
+  // await webhook.subscribe({ oauth_token: key, oauth_token_secret: secret });
 
   client.get(
     "statuses/mentions_timeline",
@@ -65,9 +65,7 @@ router.post("/twitter/tweets", async (req, res) => {
         "statuses/user_timeline",
         { count: 100 },
         (err, tweets, response) => {
-          const userTweets = tweets.filter(
-            tweet => tweet.in_reply_to_status_id !== null
-          );
+          const userTweets = tweets.filter(tweet => tweet.in_reply_to_status_id !== null);
           if (err) console.log(err);
           res.json(userTweets.concat(mentionedTweets));
         }
@@ -79,15 +77,27 @@ router.post("/twitter/tweets", async (req, res) => {
 router.post("/twitter/reply", async (req, res) => {
   const { key, secret, statusID, status, keywords } = req.body;
   const client = createTwitterClient(key, secret);
+  const channelsClient = createPusherChannelClient();
   const params = {
     in_reply_to_status_id: statusID,
     status
-  };
+  }
 
-  client.post("/statuses/update", params, (error, tweet, response) => {
-    if (error) res.sendStatus(500);
+  // creating socket connection with twitter stream
+  const stream = client.stream('statuses/filter', {track: keywords});
+    stream.on('data', function(tweet) {
+      console.log(tweet);
+      channelsClient.trigger('chat',keywords.split(',')[1] , tweet);
+    });
+    
+    stream.on('error', function(error) {
+      throw error;
+    }); 
+
+  client.post('/statuses/update', params , (error, tweet, response) => {
+    if(error) res.sendStatus(500);
     res.json(tweet);
-  });
+  })
 });
 
 module.exports = router;
