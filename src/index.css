@@ -21,3 +21,30 @@ body {
 .lc-1f0e56z{
   height: calc(100vh - 64px - 150px) !important;
 }
+
+.lc-x0i9wh {
+  display: flex;
+  flex-direction: inherit;
+}
+.lc-1asrk6q .lc-13e3qow{
+    margin-top: 10px;
+    background: #3f51b4;
+    color: #fff;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    padding: 10px;
+}
+
+.lc-bgzoqr .lc-13e3qow{
+  margin: 1px 0;
+  background: #f4f4f8;
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 75%;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
