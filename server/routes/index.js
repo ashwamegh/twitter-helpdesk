@@ -69,7 +69,8 @@ router.post("/twitter/reply", async (req, res) => {
     });
     
     stream.on('error', function(error) {
-      throw error;
+      console.log(error);
+      res.sendStatus(500);
     }); 
 
   client.post('/statuses/update', params , (error, tweet, response) => {
