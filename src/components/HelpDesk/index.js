@@ -54,7 +54,8 @@ class HelpDesk extends Component {
       tweets: [],
       tweetThread: [],
       message: "",
-      threadID: ""
+      threadID: "",
+      tweeted: false,
     };
 
     this.postThreadReply = this.postThreadReply.bind(this);
@@ -129,6 +130,7 @@ class HelpDesk extends Component {
   postThreadReply() {
     const { message, tweetThread, threadID } = this.state;
     const self = this;
+    this.setState({ tweeted: true });
 
     fetch(`${process.env.REACT_APP_SERVER}/twitter/reply`, {
       method: "post",
@@ -152,6 +154,7 @@ class HelpDesk extends Component {
         );
         self.setState({ tweets: updatedTweets }, () => {
           self.fetchTweetThread(threadID);
+          self.setState({ tweeted: false });
         });
       })
       .catch(function(error) {
@@ -164,7 +167,7 @@ class HelpDesk extends Component {
   }
 
   render() {
-    const { tweets, tweetThread, threadID } = this.state;
+    const { tweets, tweetThread, threadID, tweeted } = this.state;
 
     return (
       <ThemeProvider>
@@ -186,7 +189,7 @@ class HelpDesk extends Component {
                 md={9}
                 style={{ borderLeft: "1px solid #8080803d" }}
               >
-                {Messagelist(tweetThread)}
+                {Messagelist(tweetThread, tweeted)}
                 <TextComposer
                   style={{ minHeight: 150 }}
                   onChange={this.updateNewStatus}
@@ -241,7 +244,7 @@ const Chatlist = (tweets, fetchTweetThread, threadID) => {
   );
 };
 
-const Messagelist = tweetThread => {
+const Messagelist = (tweetThread, tweeted) => {
   const username = localStorage.getItem("username");
 
   return (
@@ -265,6 +268,8 @@ const Messagelist = tweetThread => {
           </Message>
         </MessageGroup>
       ))}
+      {tweeted &&
+        <span>loading...</span>}
     </MessageList>
   );
 };
