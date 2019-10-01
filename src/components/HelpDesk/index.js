@@ -69,12 +69,13 @@ class HelpDesk extends Component {
     });
 
     const channel = pusher.subscribe("chat");
-    channel.bind("message", socketData => {
+    channel.bind(localStorage.getItem("username"), socketData => {
+      console.log(socketData)
       const tweetLoaded =
         this.state.tweets.filter(tweet => tweet.id_str === socketData.id_str)
           .length > 0;
       if (!tweetLoaded) {
-        const updatedTweets = [...socketData, ...this.state.tweets].sort(
+        const updatedTweets = [socketData, ...this.state.tweets].sort(
           (a, b) => new Date(a.created_at) - new Date(b.created_at)
         );
         this.setState({ tweets: updatedTweets }, () => {
@@ -127,7 +128,8 @@ class HelpDesk extends Component {
   };
 
   postThreadReply() {
-    const { message, tweetThread } = this.state;
+    const { message, tweetThread, threadID } = this.state;
+    const self = this;
 
     fetch(`${process.env.REACT_APP_SERVER}/twitter/reply`, {
       method: "post",
@@ -139,12 +141,18 @@ class HelpDesk extends Component {
         secret: localStorage.getItem("twitterHelpdesk.accessSecret"),
         status: `@${tweetThread[0].user.screen_name} ${message}`,
         statusID: tweetThread[0].id_str,
-        keywords: tweetThread[0].user.id_str
+        keywords: `${tweetThread[0].user.id_str},${localStorage.getItem('username')}`
       })
     })
       .then(json)
       .then(function(data) {
         console.log("tweeted");
+        const updatedTweets = [data, ...self.state.tweets].sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
+        self.setState({ tweets: updatedTweets }, () => {
+          self.fetchTweetThread(threadID);
+        });
       })
       .catch(function(error) {
         console.log("Request failed", error);
