@@ -3,7 +3,6 @@ const router = express.Router();
 const Twitter = require("twitter");
 require("dotenv").config();
 const Pusher = require("pusher");
-const { Autohook } = require("twitter-autohook");
 
 const createPusherChannelClient = () => {
   return new Pusher({
@@ -31,31 +30,10 @@ router.get("/", function(req, res, next) {
 router.post("/twitter/tweets", async (req, res) => {
   const { key, secret } = req.body;
   const client = createTwitterClient(key, secret);
-  // const channelsClient = createPusherChannelClient();
   const params = {
     exclude_replies: false,
     count: 100
   };
-
-  // const webhook = new Autohook();
-
-  // // Removes existing webhooks
-  // await webhook.removeWebhooks();
-
-  // // Listens to incoming activity
-  // webhook.on("event", event => {
-  //   if (Object.prototype.hasOwnProperty.call(event, "tweet_create_events")) {
-  //     console.log("Something happened:", event);
-  //     channelsClient.trigger("chat", "message", event.tweet_create_events);
-  //   }
-  // });
-
-  // // Starts a server and adds a new webhook
-  // await webhook.start();
-
-  // // Subscribes to a user's activity
-  // await webhook.subscribe({ oauth_token: key, oauth_token_secret: secret });
-
   client.get(
     "statuses/mentions_timeline",
     params,
@@ -75,7 +53,7 @@ router.post("/twitter/tweets", async (req, res) => {
 });
 
 router.post("/twitter/reply", async (req, res) => {
-  const { key, secret, statusID, status, keywords } = req.body;
+  const { key, secret, statusID, status, keywords, username } = req.body;
   const client = createTwitterClient(key, secret);
   const channelsClient = createPusherChannelClient();
   const params = {
@@ -87,7 +65,7 @@ router.post("/twitter/reply", async (req, res) => {
   const stream = client.stream('statuses/filter', {track: keywords});
     stream.on('data', function(tweet) {
       console.log(tweet);
-      channelsClient.trigger('chat',keywords.split(',')[1] , tweet);
+      channelsClient.trigger('chat',username, tweet);
     });
     
     stream.on('error', function(error) {
