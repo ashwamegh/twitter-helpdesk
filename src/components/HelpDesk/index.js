@@ -69,19 +69,10 @@ class HelpDesk extends Component {
     });
 
     const channel = pusher.subscribe("chat");
-    channel.bind(localStorage.getItem("username"), socketData => {
-      console.log(socketData)
-      const tweetLoaded =
-        this.state.tweets.filter(tweet => tweet.id_str === socketData.id_str)
-          .length > 0;
-      if (!tweetLoaded) {
-        const updatedTweets = [socketData, ...this.state.tweets].sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
-        this.setState({ tweets: updatedTweets }, () => {
-          this.fetchTweetThread(this.state.threadID);
-        });
-      }
+    channel.bind("message", socketData => {
+      this.setState({ tweets: [socketData, ...this.state.tweets] }, () => {
+        this.fetchTweetThread(this.state.threadID);
+      });
     });
 
     fetch(`${process.env.REACT_APP_SERVER}/twitter/tweets`, {
@@ -141,7 +132,7 @@ class HelpDesk extends Component {
         secret: localStorage.getItem("twitterHelpdesk.accessSecret"),
         status: `@${tweetThread[0].user.screen_name} ${message}`,
         statusID: tweetThread[0].id_str,
-        keywords: `${tweetThread[0].user.id_str},${localStorage.getItem('username')}`
+        keywords: `@${tweetThread[0].user.screen_name},${localStorage.getItem("username")}`
       })
     })
       .then(json)
