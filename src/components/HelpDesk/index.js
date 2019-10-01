@@ -54,7 +54,7 @@ class HelpDesk extends Component {
       tweets: [],
       tweetThread: [],
       message: "",
-      threadID: "",
+      threadID: ""
     };
 
     this.postThreadReply = this.postThreadReply.bind(this);
@@ -70,11 +70,16 @@ class HelpDesk extends Component {
 
     const channel = pusher.subscribe("chat");
     channel.bind("message", socketData => {
-      const tweetLoaded = this.state.tweets.filter(tweet => tweet.id_str === socketData.id_str).length>0;
-      if(!tweetLoaded){
-      this.setState({ tweets: [socketData, ...this.state.tweets] }, () => {
-        this.fetchTweetThread(this.state.threadID);
-      });
+      const tweetLoaded =
+        this.state.tweets.filter(tweet => tweet.id_str === socketData.id_str)
+          .length > 0;
+      if (!tweetLoaded) {
+        const updatedTweets = [...socketData, ...this.state.tweets].sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
+        this.setState({ tweets: updatedTweets }, () => {
+          this.fetchTweetThread(this.state.threadID);
+        });
       }
     });
 
@@ -90,6 +95,9 @@ class HelpDesk extends Component {
     })
       .then(json)
       .then(function(data) {
+        data = data.sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
         self.setState({ tweets: data });
       })
       .catch(function(error) {
@@ -99,13 +107,22 @@ class HelpDesk extends Component {
 
   fetchTweetThread = tweetID => {
     const { tweets } = this.state;
-    const tweetThread = tweets
-      .filter(
-        tweet =>
-          tweet.id_str === tweetID ||
-          tweet.in_reply_to_status_id_str === tweetID
-      )
-      .reverse();
+    const tweetsFromThread = [];
+    const tweetThread = tweets.filter(tweet => {
+      if (
+        tweet.id_str === tweetID ||
+        tweet.in_reply_to_status_id_str === tweetID
+      ) {
+        tweetsFromThread.push(tweet.id_str);
+        return true;
+      } else {
+        if (tweetsFromThread.indexOf(tweet.in_reply_to_status_id_str) > -1) {
+          tweetsFromThread.push(tweet.id_str);
+          return true;
+        }
+        return false;
+      }
+    });
     this.setState({ tweetThread, threadID: tweetID });
   };
 
@@ -122,7 +139,7 @@ class HelpDesk extends Component {
         secret: localStorage.getItem("twitterHelpdesk.accessSecret"),
         status: `@${tweetThread[0].user.screen_name} ${message}`,
         statusID: tweetThread[0].id_str,
-        keywords: `${tweetThread[0].user.screen_name},${localStorage.getItem('username')}`
+        keywords: tweetThread[0].user.id_str
       })
     })
       .then(json)
@@ -184,7 +201,6 @@ class HelpDesk extends Component {
   }
 }
 
-
 const Chatlist = (tweets, fetchTweetThread, threadID) => {
   return (
     <ChatList>
@@ -218,7 +234,7 @@ const Chatlist = (tweets, fetchTweetThread, threadID) => {
 };
 
 const Messagelist = tweetThread => {
-  const username = localStorage.getItem('username');
+  const username = localStorage.getItem("username");
 
   return (
     <MessageList active>
@@ -230,7 +246,9 @@ const Messagelist = tweetThread => {
           isOwn={username === thread.user.screen_name}
         >
           <Message
-            authorName={username === thread.user.screen_name ?  "You": thread.user.name}
+            authorName={
+              username === thread.user.screen_name ? "You" : thread.user.name
+            }
             date={`${moment(new Date(thread.created_at)).format(
               "ll"
             )} at ${moment(new Date(thread.created_at)).format("LT")}`}
