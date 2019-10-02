@@ -37,7 +37,7 @@ router.get("/", function(req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.post("/twitter/tweets", async (req, res) => {
+router.post("/twitter/tweets", (req, res) => {
   const { key, secret } = req.body;
   const client = createTwitterClient(key, secret);
   const params = {
@@ -62,7 +62,7 @@ router.post("/twitter/tweets", async (req, res) => {
   );
 });
 
-router.post("/twitter/reply", async (req, res) => {
+router.post("/twitter/reply", (req, res) => {
   const { key, secret, statusID, status, keywords, username, streamConnected } = req.body;
   const client = createTwitterClient(key, secret);
   const T = createTwitClient(key, secret);
@@ -71,20 +71,6 @@ router.post("/twitter/reply", async (req, res) => {
     in_reply_to_status_id: statusID,
     status
   }
-
-  // if(!streamConnected){
-    // creating socket connection with twitter stream
-    // const stream = client.stream('statuses/filter', {track: keywords});
-      // stream.on('data', function(tweet) {
-      //   console.log(tweet);
-      //   channelsClient.trigger('chat',username, tweet);
-      // });
-      
-      // stream.on('error', function(error) {
-      //   console.log(error);
-      //   res.sendStatus(500);
-      // }); 
-  // }
     const stream = T.stream('statuses/filter', {track: keywords})
 
     stream.on('tweet', (tweet) => {
