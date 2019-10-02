@@ -112,7 +112,7 @@ class HelpDesk extends Component {
   fetchTweetThread = tweetID => {
     const { tweets } = this.state;
     const tweetsFromThread = [];
-    const tweetThread = tweets.reverse().filter(tweet => {
+    const tweetThread = [...tweets].reverse().filter(tweet => {
       if (
         tweet.id_str === tweetID ||
         tweet.in_reply_to_status_id_str === tweetID
