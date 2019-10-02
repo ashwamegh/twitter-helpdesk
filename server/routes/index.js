@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Twitter = require("twitter");
+const Twit = require('twit')
 require("dotenv").config();
 const Pusher = require("pusher");
 
@@ -18,6 +19,15 @@ const createTwitterClient = (key, secret) => {
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
     access_token_key: key,
+    access_token_secret: secret
+  });
+};
+
+const createTwitClient = (key, secret) => {
+  return new Twit({
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token: key,
     access_token_secret: secret
   });
 };
@@ -53,25 +63,34 @@ router.post("/twitter/tweets", async (req, res) => {
 });
 
 router.post("/twitter/reply", async (req, res) => {
-  const { key, secret, statusID, status, keywords, username } = req.body;
+  const { key, secret, statusID, status, keywords, username, streamConnected } = req.body;
   const client = createTwitterClient(key, secret);
+  const T = createTwitClient(key, secret);
   const channelsClient = createPusherChannelClient();
   const params = {
     in_reply_to_status_id: statusID,
     status
   }
 
-  // creating socket connection with twitter stream
-  const stream = client.stream('statuses/filter', {track: keywords});
-    stream.on('data', function(tweet) {
-      console.log(tweet);
-      channelsClient.trigger('chat',username, tweet);
-    });
-    
-    stream.on('error', function(error) {
-      console.log(error);
-      res.sendStatus(500);
-    }); 
+  // if(!streamConnected){
+    // creating socket connection with twitter stream
+    // const stream = client.stream('statuses/filter', {track: keywords});
+      // stream.on('data', function(tweet) {
+      //   console.log(tweet);
+      //   channelsClient.trigger('chat',username, tweet);
+      // });
+      
+      // stream.on('error', function(error) {
+      //   console.log(error);
+      //   res.sendStatus(500);
+      // }); 
+  // }
+    const stream = T.stream('statuses/filter', {track: keywords})
+
+    stream.on('tweet', (tweet) => {
+      console.log(tweet)
+      channelsClient.trigger('chat', username, tweet);
+    })
 
   client.post('/statuses/update', params , (error, tweet, response) => {
     if(error) res.sendStatus(500);
