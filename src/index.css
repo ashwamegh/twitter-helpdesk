@@ -28,7 +28,7 @@ body {
 }
 .lc-1asrk6q .lc-13e3qow{
     margin-top: 10px;
-    background: #3f51b4;
+    background: #5168ecfa;
     color: #fff;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
@@ -47,4 +47,73 @@ body {
   border-bottom-left-radius: 2px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
+}
+
+.lc-1kafun6{
+  background: #3f51b4d4 !important;
+  color: #fff;
+  transition: 0.3s ease-in;
+}
+
+.lc-1j8di50:hover {
+  background: rgba(0,0,0,0.1) !important;
+  transition: 0.3s ease-in!important;
+  -webkit-transition: 0.3s ease-in!important;
+  -moz-transition: 0.3s ease-in!important;
+  -ms-transition: 0.3s ease-in!important;
+  -o-transition: 0.3s ease-in!important;
+  color: #3d3d3d !important;
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+.shimmer.lc-1asrk6q .lc-13e3qow{
+  margin-top: 10px;
+  background: #fff;
+  color: #fff;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  padding: 10px;
+  animation-duration: 3s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+
+}
+
+.shimmer .lc-9z5quo{
+  margin-top: 10px;
+}
+
+.shimmer .lc-1rajx2j{
+  background: grey;
+  color: grey;
+  border-radius: 10px;
+}
+
+.shimmer .lc-3ft2j8{
+  background: grey;
+  color: grey;
+  margin-top: 10px;
+  border-radius: 10px;
 }
