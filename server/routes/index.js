@@ -37,7 +37,7 @@ router.get("/", function(req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.post("/twitter/tweets", (req, res) => {
+router.post("/twitter/tweets", async (req, res) => {
   const { key, secret } = req.body;
   const client = createTwitterClient(key, secret);
   const params = {
@@ -62,7 +62,7 @@ router.post("/twitter/tweets", (req, res) => {
   );
 });
 
-router.post("/twitter/reply", (req, res) => {
+router.post("/twitter/reply", async (req, res) => {
   const { key, secret, statusID, status, keywords, username, streamConnected } = req.body;
   const client = createTwitterClient(key, secret);
   const T = createTwitClient(key, secret);
@@ -72,7 +72,6 @@ router.post("/twitter/reply", (req, res) => {
     status
   }
     const stream = T.stream('statuses/filter', {track: keywords})
-
     stream.on('tweet', (tweet) => {
       console.log(tweet)
       channelsClient.trigger('chat', username, tweet);
