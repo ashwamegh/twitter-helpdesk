@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/pm2 start ./bin/www",
-    "dev": "./node_modules/.bin/pm2 start ./bin/www --watch"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www --watch"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -19,7 +19,5 @@
     "twit": "^2.2.11",
     "twitter": "^1.7.1"
   },
-  "devDependencies": {
-    "pm2": "^3.5.1"
-  }
+  "devDependencies": {}
 }
