@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Pusher from "pusher-js";
 import moment from "moment";
+import Linkify from 'react-linkify';
 import Grid from "@material-ui/core/Grid";
 import {
   ThemeProvider,
@@ -77,7 +78,7 @@ class HelpDesk extends Component {
           .length > 0;
       if (!tweetLoaded) {
         const updatedTweets = [socketData, ...this.state.tweets].sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
         this.setState({ tweets: updatedTweets }, () => {
           this.fetchTweetThread(this.state.threadID);
@@ -97,8 +98,9 @@ class HelpDesk extends Component {
     })
       .then(json)
       .then(function(data) {
+        data = data.filter(tweet => !tweet.errors);
         data = data.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
         self.setState({ tweets: data });
       })
@@ -124,7 +126,7 @@ class HelpDesk extends Component {
         }
         return false;
       }
-    });
+    }).reverse();
     this.setState({ tweetThread, threadID: tweetID });
   };
 
@@ -152,7 +154,7 @@ class HelpDesk extends Component {
       .then(function(data) {
         console.log("tweeted");
         const updatedTweets = [data, ...self.state.tweets].sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
         self.setState({ tweets: updatedTweets }, () => {
           self.fetchTweetThread(threadID);
@@ -267,7 +269,7 @@ const Messagelist = (tweetThread, tweeted) => {
               "ll"
             )} at ${moment(new Date(thread.created_at)).format("LT")}`}
           >
-            <MessageText>{thread.text}</MessageText>
+          <Linkify><MessageText>{thread.text}</MessageText></Linkify>
           </Message>
         </MessageGroup>
       ))}
