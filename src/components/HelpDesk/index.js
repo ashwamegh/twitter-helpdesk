@@ -71,6 +71,7 @@ class HelpDesk extends Component {
 
     const channel = pusher.subscribe("chat");
     channel.bind(localStorage.getItem('username'), socketData => {
+      localStorage.setItem('stream-connected', false);
       const tweetLoaded =
         this.state.tweets.filter(tweet => tweet.id_str === socketData.id_str)
           .length > 0;
@@ -143,7 +144,8 @@ class HelpDesk extends Component {
         status: `@${tweetThread[0].user.screen_name} ${message}`,
         statusID: tweetThread[0].id_str,
         keywords: `@${tweetThread[0].user.screen_name},@${localStorage.getItem("username")}`,
-        username: localStorage.getItem("username")
+        username: localStorage.getItem("username"),
+        streamConnected: localStorage.getItem('stream-connected')
       })
     })
       .then(json)
@@ -155,6 +157,7 @@ class HelpDesk extends Component {
         self.setState({ tweets: updatedTweets }, () => {
           self.fetchTweetThread(threadID);
           self.setState({ tweeted: false });
+          localStorage.setItem('stream-connected', true);
         });
       })
       .catch(function(error) {
@@ -269,7 +272,23 @@ const Messagelist = (tweetThread, tweeted) => {
         </MessageGroup>
       ))}
       {tweeted &&
-        <span>loading...</span>}
+        <div className="shimmer lc-1asrk6q eslhdd60">
+          <div className="lc-x7rlc9 eslhdd61">
+            <div className="lc-9z5quo e11ezd0e0">
+              <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png" alt="profile logo placeholder" />
+            </div>
+          </div>
+        <div className="lc-x0i9wh e1jdwequ0">
+          <div>
+            <div aria-expanded="false" className="lc-13e3qow e10ccb470">
+              <div className="lc-81ie7q e10ccb473"><div><div className="lc-1rajx2j e10ccb472">
+                <span className="lc-1lt0t9n e10ccb471">You </span>
+                <span className="lc-1lt0t9n e10ccb474">Oct 2, 2019 at 2:11 AM</span>
+              </div>
+            </div>
+          <div className="lc-3ft2j8 eovu8nx0">@theinternetimes ge it</div>
+        </div>
+      </div></div></div></div>}
     </MessageList>
   );
 };
